@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bimabima</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- GAYA DASAR --- */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fcf5f7;
+            background-image: radial-gradient(#ffcad4 1px, transparent 1px);
+            background-size: 20px 20px;
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden; /* Mencegah scroll di background */
+        }
+
+        /* --- LAYAR PEMBUKA (WELCOME SCREEN) --- */
+        #welcome-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(252, 245, 247, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease;
+        }
+
+        #welcome-screen h1 {
+            font-family: 'Caveat', cursive;
+            font-size: 3.5rem;
+            color: #d17a7e;
+            margin-bottom: 20px;
+        }
+
+        .open-btn {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: #c04968;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: 'Quicksand', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 154, 158, 0.4);
+            transition: transform 0.3s ease;
+            animation: bounce 2s infinite;
+        }
+
+        .open-btn:hover { transform: scale(1.05); }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* --- KOTAK PERSEGI UTAMA (ALBUM COVER) --- */
+        .square-album {
+            width: 100%;
+            max-width: 750px;
+            aspect-ratio: 1 / 1; 
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(220, 160, 170, 0.3);
+            display: flex;
+            overflow: hidden; 
+            position: relative;
+            
+            /* Awalnya disembunyikan sampai tombol diklik */
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .square-album.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* --- SISI KIRI: SLIDER FOTO AUTO --- */
+        .left-photo {
+            width: 50%;
+            height: 100%;
+            position: relative;
+            background: #fdf5f6;
+        }
+
+        .left-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        /* --- SISI KANAN: LIRIK SINKRON --- */
+        .right-lyrics {
+            width: 50%;
+            height: 100%;
+            padding: 35px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(to bottom right, #ffffff, #fffafb);
+        }
+
+        .song-title {
+            font-size: 1.6rem;
+            color: #d17a7e;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .song-artist {
+            font-size: 0.95rem;
+            color: #b598a1;
+            margin: 5px 0 25px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Kotak Scroll Lirik */
+        .lyrics-box {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+            scroll-behavior: smooth;
+        }
+
+        .lyrics-box::-webkit-scrollbar { display: none; }
+        .lyrics-box { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Desain Baris Lirik */
+        .lyric-line {
+            font-size: 1.1rem;
+            color: #d8c3c8; 
+            margin-bottom: 15px;
+            line-height: 1.5;
+            transition: all 0.4s ease;
+            transform-origin: left center;
+        }
+
+        /* LIRIK YANG SEDANG MENYALA (SYNC) */
+        .lyric-line.active {
+            color: #d17a7e; 
+            font-weight: 700;
+            font-size: 1.35rem;
+            transform: scale(1.05); 
+        }
+
+        /* --- RESPONSIVE UNTUK HP --- */
+        @media (max-width: 650px) {
+            body { padding: 20px; }
+            .square-album {
+                flex-direction: column;
+                aspect-ratio: auto;
+                height: 85vh; 
+            }
+            .left-photo { width: 100%; height: 45%; }
+            .right-lyrics { width: 100%; height: 55%; padding: 25px;}
+        }
+
+    </style>
+</head>
+<body>
+
+    <audio id="myAudio" src="sukavivi.mp3" loop></audio>
+
+    <div id="welcome-screen">
+        <h1>bima ada sesuatu buat vivii...</h1>
+        <br>
+        <button class="open-btn" onclick="startAlbum()">bukaaa</button>
+    </div>
+
+    <div class="square-album" id="album-container">
+        
+        <div class="left-photo">
+            <img id="photo-display" alt="Foto Pacar">
+        </div>
+
+        <div class="right-lyrics">
+            <h1 class="song-title">I'd like to watch you sleeping</h1>
+            <p class="song-artist">Sal Priadi</p>
+            
+            <div class="lyrics-box" id="lyrics-box">
+                </div>
+        </div>
+
+    </div>
+
+    <script>
+        const audio = document.getElementById("myAudio");
+        const welcomeScreen = document.getElementById("welcome-screen");
+        const albumContainer = document.getElementById("album-container");
+
+        // ==========================================
+        // 0. FUNGSI UNTUK MEMULAI SEMUANYA
+        // ==========================================
+        function startAlbum() {
+            // 1. Hilangkan layar pembuka
+            welcomeScreen.style.opacity = "0";
+            setTimeout(() => {
+                welcomeScreen.style.display = "none";
+                
+                // 2. Munculkan albumnya dengan animasi
+                albumContainer.classList.add("show");
+                
+                // 3. PUTAR LAGU OTOMATIS! (Pasti berhasil karena sudah ada interaksi klik)
+                audio.play();
+                
+            }, 600); // Tunggu animasi fade out selesai
+        }
+
+        // ==========================================
+        // 1. PENGATURAN FOTO OTOMATIS (SLIDESHOW)
+        // ==========================================
+        const photos = [
+            "vivi1.jpg", 
+            "vivi6.jpg", 
+            "vivi3.jpg", 
+            "vivi4~2.jpg"
+        ];
+        
+        const photoDisplay = document.getElementById("photo-display");
+        let currentPhotoIndex = 0;
+
+        photoDisplay.src = photos[currentPhotoIndex];
+
+        function autoSlidePhoto() {
+            photoDisplay.style.opacity = "0.3";
+            
+            setTimeout(() => {
+                currentPhotoIndex++;
+                if (currentPhotoIndex >= photos.length) {
+                    currentPhotoIndex = 0; 
+                }
+                photoDisplay.src = photos[currentPhotoIndex];
+                
+                photoDisplay.style.opacity = "1";
+            }, 800); 
+        }
+
+        setInterval(autoSlidePhoto, 4000);
+
+        // ==========================================
+        // 2. PENGATURAN LIRIK SINKRON
+        // ==========================================
+        const lyricsData = [
+            { time: 0, text: "Hal yang paling ku suka" },
+            { time: 3, text: "Di dekatmu" },
+            { time: 5, text: "Kau adalah orang" },
+            { time: 6.5, text: "Favoritku..." },
+            { time: 8.5, text: "Nomer satu" },
+            { time: 9.6, text: "Nomer dua" },
+            { time: 11.5, text: "Tiga" },
+            { time: 12.5, text: "Empat" },
+            { time: 13.5, text: "Lima" },
+            { time: 14.5, text: "Enam" },
+            { time: 15.5, text: "Isinya namamu" },
+            { time: 18.4, text: "NOVIA EXTA ARIANA" }
+        ];
+
+        const lyricsBox = document.getElementById("lyrics-box");
+        lyricsData.forEach((lyric, index) => {
+            let div = document.createElement("div");
+            div.className = "lyric-line";
+            div.id = "lyric-" + index;
+            div.innerText = lyric.text;
+            lyricsBox.appendChild(div);
+        });
+
+        // ==========================================
+        // 3. SINKRONISASI LIRIK DENGAN AUDIO
+        // ==========================================
+        let activeLyricIndex = -1;
+
+        audio.addEventListener("timeupdate", () => {
+            const currentTime = audio.currentTime;
+            
+            let newActiveIndex = -1;
+            for (let i = 0; i < lyricsData.length; i++) {
+                if (currentTime >= lyricsData[i].time) {
+                    newActiveIndex = i;
+                } else {
+                    break;
+                }
+            }
+
+            if (newActiveIndex !== activeLyricIndex && newActiveIndex !== -1) {
+                if (activeLyricIndex !== -1) {
+                    document.getElementById("lyric-" + activeLyricIndex).classList.remove("active");
+                }
+                
+                activeLyricIndex = newActiveIndex;
+                const activeElement = document.getElementById("lyric-" + activeLyricIndex);
+                activeElement.classList.add("active");
+                
+                // Otomatis scroll
+                activeElement.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+        });
+    </script>
+</body>
+</html>
