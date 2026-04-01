@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>bimaaa</title>
+    <title>Untuk Vivii 💖</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     
@@ -12,7 +12,8 @@
         body {
             margin: 0;
             padding: 0;
-            min-height: 100vh;
+            height: 100vh;
+            width: 100vw;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -20,10 +21,10 @@
             background-image: radial-gradient(#ffcad4 1px, transparent 1px);
             background-size: 25px 25px;
             font-family: 'Quicksand', sans-serif;
-            overflow: hidden;
+            overflow: hidden; /* Mengunci agar background tidak bisa di-scroll */
         }
 
-        /* --- WELCOME SCREEN (DIPERBAIKI) --- */
+        /* --- WELCOME SCREEN --- */
         #welcome-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -34,7 +35,6 @@
             align-items: center;
             z-index: 9999;
             transition: opacity 0.8s ease;
-            text-align: center;
         }
 
         #welcome-screen h1 {
@@ -42,7 +42,6 @@
             font-size: 4rem;
             color: #d17a7e;
             margin-bottom: 25px;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.05);
         }
 
         .open-btn {
@@ -55,13 +54,7 @@
             font-weight: 700;
             cursor: pointer;
             box-shadow: 0 10px 25px rgba(255, 154, 158, 0.4);
-            transition: all 0.3s ease;
             animation: bounce 2s infinite;
-        }
-
-        .open-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 30px rgba(255, 154, 158, 0.6);
         }
 
         @keyframes bounce {
@@ -69,20 +62,21 @@
             50% { transform: translateY(-10px); }
         }
 
-        /* --- KOTAK PERSEGI UTAMA (KEMBALI KE LAYOUT ASLI) --- */
+        /* --- KOTAK ALBUM (STABIL) --- */
         .square-album {
             width: 95%;
-            max-width: 800px; /* Ukuran pas untuk desktop & tablet */
-            aspect-ratio: 1 / 0.6; /* Membuat bentuk kotak panjang yang rapi */
+            max-width: 800px;
+            aspect-ratio: 1 / 0.6;
             background: white;
             border-radius: 30px;
             box-shadow: 0 25px 60px rgba(220, 160, 170, 0.3);
-            display: flex; /* Mengatur kiri dan kanan */
+            display: flex;
             overflow: hidden; 
             position: relative;
             opacity: 0;
             transform: scale(0.95);
-            transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: opacity 1s ease, transform 1s ease;
+            z-index: 10;
         }
 
         .square-album.show {
@@ -90,12 +84,10 @@
             transform: scale(1);
         }
 
-        /* --- SISI KIRI: FOTO (DIBESARKAN) --- */
         .left-photo {
-            width: 50%; /* Mengambil setengah bagian */
+            width: 50%;
             height: 100%;
             background: #fdf5f6;
-            position: relative;
         }
 
         .left-photo img {
@@ -105,16 +97,15 @@
             transition: opacity 0.8s ease-in-out;
         }
 
-        /* --- SISI KANAN: LIRIK (KEMBALI KE KIRI) --- */
         .right-lyrics {
-            width: 50%; /* Setengah bagian kanan */
+            width: 50%;
             height: 100%;
             padding: 45px 35px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            background: linear-gradient(135deg, #ffffff, #fffafb);
-            text-align: left; /* Teks rata kiri */
+            background: #ffffff;
+            text-align: left;
         }
 
         .song-title {
@@ -122,7 +113,6 @@
             color: #d17a7e;
             font-weight: 700;
             margin: 0;
-            line-height: 1.2;
         }
 
         .song-artist {
@@ -131,21 +121,23 @@
             margin: 5px 0 25px 0;
             text-transform: uppercase;
             letter-spacing: 2px;
-            font-weight: 600;
         }
 
-        /* Kotak Scroll Lirik */
+        /* Kotak Scroll Lirik (Difiksasi untuk Chrome) */
         .lyrics-box {
             flex: 1;
-            overflow-y: auto;
-            padding-right: 10px;
-            mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
-            scroll-behavior: smooth;
-            text-align: left; /* Memastikan isi box rata kiri */
+            overflow-y: hidden; /* Kita gerakkan lewat JS, jadi scrollbar manual dimatikan */
+            position: relative;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
         }
 
-        .lyrics-box::-webkit-scrollbar { display: none; }
+        .lyrics-content {
+            position: absolute;
+            width: 100%;
+            transition: top 0.5s ease-in-out; /* Animasi geser lirik yang mulus */
+            top: 0;
+        }
 
         .lyric-line {
             font-size: 1.15rem;
@@ -153,7 +145,6 @@
             margin-bottom: 20px;
             line-height: 1.5;
             transition: all 0.4s ease;
-            transform-origin: left center;
         }
 
         .lyric-line.active {
@@ -163,17 +154,15 @@
             transform: scale(1.05); 
         }
 
-        /* --- RESPONSIVE KHUSUS HP --- */
         @media (max-width: 768px) {
             .square-album {
-                flex-direction: column; /* Tumpuk atas bawah di HP */
+                flex-direction: column;
                 aspect-ratio: auto;
                 height: 85vh;
                 max-width: 400px;
             }
-            .left-photo { width: 100%; height: 45%; }
-            .right-lyrics { width: 100%; height: 55%; padding: 25px; }
-            #welcome-screen h1 { font-size: 2.8rem; }
+            .left-photo { width: 100%; height: 40%; }
+            .right-lyrics { width: 100%; height: 60%; padding: 25px; }
         }
     </style>
 </head>
@@ -182,12 +171,11 @@
     <audio id="myAudio" src="sukavivi.mp3" loop></audio>
 
     <div id="welcome-screen">
-        <h1>bima ada sesuatu <br> buat vivii...</h1>
-        <button class="open-btn" onclick="startAlbum()">bukaaa ♥️</button>
+        <h1>bima ada sesuatu buat vivii...</h1>
+        <button class="open-btn" onclick="startAlbum()">bukaaa 💌</button>
     </div>
 
     <div class="square-album" id="album-container">
-        
         <div class="left-photo">
             <img id="photo-display" alt="Foto Pacar">
         </div>
@@ -196,16 +184,17 @@
             <h1 class="song-title">I'd like to watch you sleeping</h1>
             <p class="song-artist">Sal Priadi</p>
             
-            <div class="lyrics-box" id="lyrics-box">
-                </div>
+            <div class="lyrics-box">
+                <div class="lyrics-content" id="lyrics-content"></div>
+            </div>
         </div>
-
     </div>
 
     <script>
         const audio = document.getElementById("myAudio");
         const welcomeScreen = document.getElementById("welcome-screen");
         const albumContainer = document.getElementById("album-container");
+        const lyricsContent = document.getElementById("lyrics-content");
 
         function startAlbum() {
             welcomeScreen.style.opacity = "0";
@@ -216,7 +205,6 @@
             }, 600);
         }
 
-        // --- PENGATURAN FOTO (SLIDESHOW) ---
         const photos = ["vivi1.jpg", "vivi6.jpg", "vivi3.jpg", "vivi4~2.jpg"];
         const photoDisplay = document.getElementById("photo-display");
         let currentPhotoIndex = 0;
@@ -231,7 +219,6 @@
             }, 800);
         }, 4000);
 
-        // --- PENGATURAN LIRIK (RAPI KIRI) ---
         const lyricsData = [
             { time: 0, text: "Hal yang paling ku suka" },
             { time: 3, text: "Di dekatmu" },
@@ -247,33 +234,42 @@
             { time: 18.4, text: "NOVIA EXTA ARIANA" }
         ];
 
-        const lyricsBox = document.getElementById("lyrics-box");
+        // Masukkan lirik
         lyricsData.forEach((lyric, index) => {
             let div = document.createElement("div");
             div.className = "lyric-line";
             div.id = "lyric-" + index;
             div.innerText = lyric.text;
-            lyricsBox.appendChild(div);
+            lyricsContent.appendChild(div);
         });
 
-        // Sinkronisasi Lirik
         let activeLyricIndex = -1;
+
         audio.addEventListener("timeupdate", () => {
             const currentTime = audio.currentTime;
             let newActiveIndex = -1;
+
             for (let i = 0; i < lyricsData.length; i++) {
                 if (currentTime >= lyricsData[i].time) newActiveIndex = i;
                 else break;
             }
 
             if (newActiveIndex !== activeLyricIndex && newActiveIndex !== -1) {
+                // Matikan yang lama
                 if (activeLyricIndex !== -1) {
                     document.getElementById("lyric-" + activeLyricIndex).classList.remove("active");
                 }
+
+                // Aktifkan yang baru
                 activeLyricIndex = newActiveIndex;
                 const activeElement = document.getElementById("lyric-" + activeLyricIndex);
                 activeElement.classList.add("active");
-                activeElement.scrollIntoView({ behavior: "smooth", block: "center" });
+
+                // --- PERBAIKAN UNTUK CHROME ---
+                // Hitung posisi: Geser kontainer lirik agar baris yang aktif selalu di posisi atas/tengah box
+                // Rumus: tinggi baris dikali urutan baris
+                const moveAmount = activeElement.offsetTop - 40; 
+                lyricsContent.style.top = `-${moveAmount}px`;
             }
         });
     </script>
