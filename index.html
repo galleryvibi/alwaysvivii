@@ -3,12 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Untuk Vivii 💖</title>
+    <title>untuk vivii </title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- GAYA DASAR --- */
+        :root {
+            --primary: #d17a7e;
+            --bg-soft: #fdf5f6;
+            --white: #ffffff;
+            --shadow: rgba(209, 122, 126, 0.2);
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -17,259 +23,305 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #fcf5f7;
+            background: var(--bg-soft);
             background-image: radial-gradient(#ffcad4 1px, transparent 1px);
             background-size: 25px 25px;
             font-family: 'Quicksand', sans-serif;
-            overflow: hidden; /* Mengunci agar background tidak bisa di-scroll */
+            overflow: hidden; 
         }
 
         /* --- WELCOME SCREEN --- */
         #welcome-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #fdf5f6;
+            background: var(--bg-soft);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.8s ease;
+            transition: opacity 1s ease;
         }
 
         #welcome-screen h1 {
             font-family: 'Caveat', cursive;
-            font-size: 4rem;
-            color: #d17a7e;
-            margin-bottom: 25px;
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
         }
 
         .open-btn {
             background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
             color: #c04968;
             border: none;
-            padding: 18px 50px;
+            padding: 15px 45px;
             border-radius: 50px;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 10px 25px rgba(255, 154, 158, 0.4);
-            animation: bounce 2s infinite;
+            box-shadow: 0 10px 25px var(--shadow);
+            transition: all 0.3s ease;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .open-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px var(--shadow);
         }
 
-        /* --- KOTAK ALBUM (STABIL) --- */
-        .square-album {
-            width: 95%;
-            max-width: 800px;
-            aspect-ratio: 1 / 0.6;
-            background: white;
-            border-radius: 30px;
-            box-shadow: 0 25px 60px rgba(220, 160, 170, 0.3);
+        /* --- HEART ANIMATION --- */
+        .heart {
+            position: absolute;
+            color: var(--primary);
+            font-size: 20px;
+            z-index: 1000;
+            animation: moveHeart 3s linear forwards;
+        }
+
+        @keyframes moveHeart {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- MAIN CARD --- */
+        .spotify-card {
+            width: 92%;
+            max-width: 750px; /* Ukuran maksimal diperkecil agar lebih compact */
+            height: 60vh;    /* Tinggi dikurangi agar tidak banyak ruang kosong */
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 35px;
+            box-shadow: 0 30px 70px var(--shadow);
             display: flex;
             overflow: hidden; 
-            position: relative;
             opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 1s ease, transform 1s ease;
-            z-index: 10;
+            transform: translateY(20px);
+            transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        .square-album.show {
+        .spotify-card.show {
             opacity: 1;
-            transform: scale(1);
+            transform: translateY(0);
         }
 
-        .left-photo {
-            width: 50%;
+        .cover-art {
+            width: 40%;
             height: 100%;
-            background: #fdf5f6;
+            overflow: hidden;
+            position: relative;
         }
 
-        .left-photo img {
+        .cover-art img {
             width: 100%;
             height: 100%;
             object-fit: cover; 
-            transition: opacity 0.8s ease-in-out;
+            position: absolute;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
         }
 
-        .right-lyrics {
-            width: 50%;
+        .cover-art img.active {
+            opacity: 1;
+            animation: kenburns 10s infinite alternate;
+        }
+
+        @keyframes kenburns {
+            from { transform: scale(1.1); }
+            to { transform: scale(1.25) rotate(1deg); }
+        }
+
+        /* --- LYRICS SECTION --- */
+        .lyrics-section {
+            width: 60%;
             height: 100%;
-            padding: 45px 35px;
+            padding: 35px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            background: #ffffff;
-            text-align: left;
         }
 
-        .song-title {
-            font-size: 1.8rem;
-            color: #d17a7e;
-            font-weight: 700;
+        .song-info {
+            margin-bottom: 20px; /* Jarak dikurangi */
+            flex-shrink: 0;
+            border-left: 3px solid var(--primary);
+            padding-left: 15px;
+        }
+
+        .song-info h1 {
+            font-size: 1.5rem;
+            color: #333;
             margin: 0;
+            line-height: 1.2;
         }
 
-        .song-artist {
-            font-size: 1rem;
-            color: #b598a1;
-            margin: 5px 0 25px 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Kotak Scroll Lirik (Difiksasi untuk Chrome) */
-        .lyrics-box {
-            flex: 1;
-            overflow-y: hidden; /* Kita gerakkan lewat JS, jadi scrollbar manual dimatikan */
-            position: relative;
-            mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
-        }
-
-        .lyrics-content {
-            position: absolute;
-            width: 100%;
-            transition: top 0.5s ease-in-out; /* Animasi geser lirik yang mulus */
-            top: 0;
-        }
-
-        .lyric-line {
-            font-size: 1.15rem;
-            color: #d8c3c8; 
-            margin-bottom: 20px;
-            line-height: 1.5;
-            transition: all 0.4s ease;
-        }
-
-        .lyric-line.active {
-            color: #d17a7e; 
+        .song-info p {
+            font-size: 0.9rem;
+            color: var(--primary);
+            margin: 5px 0 0 0;
             font-weight: 700;
-            font-size: 1.4rem;
-            transform: scale(1.05); 
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
+        .lyrics-viewport {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            text-align: center;
+        }
+
+        .lyric-item {
+            position: absolute;
+            font-size: 1.6rem; /* Ukuran lirik diperbesar sedikit agar mengisi ruang */
+            color: var(--primary);
+            font-weight: 700;
+            line-height: 1.3;
+            width: 100%;
+            opacity: 0;
+            filter: blur(8px);
+            transform: scale(0.9);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .lyric-item.active {
+            opacity: 1;
+            filter: blur(0);
+            transform: scale(1);
+        }
+
+        /* --- MOBILE OPTIMIZATION --- */
         @media (max-width: 768px) {
-            .square-album {
+            .spotify-card {
                 flex-direction: column;
-                aspect-ratio: auto;
-                height: 85vh;
-                max-width: 400px;
+                height: 80vh;
+                width: 85%;
             }
-            .left-photo { width: 100%; height: 40%; }
-            .right-lyrics { width: 100%; height: 60%; padding: 25px; }
+            .cover-art { width: 100%; height: 45%; }
+            .lyrics-section { width: 100%; height: 55%; padding: 25px; }
+            .song-info { margin-bottom: 15px; }
+            .song-info h1 { font-size: 1.2rem; }
+            .lyric-item { font-size: 1.4rem; }
         }
     </style>
 </head>
 <body>
 
-    <audio id="myAudio" src="sukavivi.mp3" loop></audio>
+    <audio id="mainAudio" src="sukavivi.mp3" loop></audio>
 
     <div id="welcome-screen">
-        <h1>bima ada sesuatu buat vivii...</h1>
-        <button class="open-btn" onclick="startAlbum()">bukaaa 💌</button>
+        <h1>bima ada sesuatu <br> buat vivii... </h1>
+        <button class="open-btn" onclick="initExperience()">BUKA SEKARANG</button>
     </div>
 
-    <div class="square-album" id="album-container">
-        <div class="left-photo">
-            <img id="photo-display" alt="Foto Pacar">
-        </div>
+    <div class="spotify-card" id="card">
+        <div class="cover-art" id="photo-container"></div>
 
-        <div class="right-lyrics">
-            <h1 class="song-title">I'd like to watch you sleeping</h1>
-            <p class="song-artist">Sal Priadi</p>
-            
-            <div class="lyrics-box">
-                <div class="lyrics-content" id="lyrics-content"></div>
+        <div class="lyrics-section">
+            <div class="song-info">
+                <h1>I'd like to watch <br> you sleeping</h1>
+                <p>Sal Priadi</p>
             </div>
+            
+            <div class="lyrics-viewport" id="viewport"></div>
         </div>
     </div>
 
     <script>
-        const audio = document.getElementById("myAudio");
-        const welcomeScreen = document.getElementById("welcome-screen");
-        const albumContainer = document.getElementById("album-container");
-        const lyricsContent = document.getElementById("lyrics-content");
-
-        function startAlbum() {
-            welcomeScreen.style.opacity = "0";
-            setTimeout(() => {
-                welcomeScreen.style.display = "none";
-                albumContainer.classList.add("show");
-                audio.play();
-            }, 600);
-        }
+        const audio = document.getElementById("mainAudio");
+        const viewport = document.getElementById("viewport");
+        const photoContainer = document.getElementById("photo-container");
 
         const photos = ["vivi1.jpg", "vivi6.jpg", "vivi3.jpg", "vivi4~2.jpg"];
-        const photoDisplay = document.getElementById("photo-display");
-        let currentPhotoIndex = 0;
-        photoDisplay.src = photos[currentPhotoIndex];
-
-        setInterval(() => {
-            photoDisplay.style.opacity = "0.3";
-            setTimeout(() => {
-                currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
-                photoDisplay.src = photos[currentPhotoIndex];
-                photoDisplay.style.opacity = "1";
-            }, 800);
-        }, 4000);
-
         const lyricsData = [
-            { time: 0, text: "Hal yang paling ku suka" },
-            { time: 3, text: "Di dekatmu" },
-            { time: 5, text: "Kau adalah orang" },
-            { time: 6.5, text: "Favoritku..." },
-            { time: 8.5, text: "Nomer satu" },
-            { time: 9.6, text: "Nomer dua" },
-            { time: 11.5, text: "Tiga" },
-            { time: 12.5, text: "Empat" },
-            { time: 13.5, text: "Lima" },
-            { time: 14.5, text: "Enam" },
-            { time: 15.5, text: "Isinya namamu" },
-            { time: 18.4, text: "NOVIA EXTA ARIANA" }
+            { t: 0, text: "Hal yang paling ku suka" },
+            { t: 3, text: "Di dekatmu" },
+            { t: 5, text: "Kau adalah orang" },
+            { t: 6.5, text: "Favoritku..." },
+            { t: 8.5, text: "Nomer satu" },
+            { t: 9.6, text: "Nomer dua" },
+            { t: 11.5, text: "Tiga" },
+            { t: 12.5, text: "Empat" },
+            { t: 13.5, text: "Lima" },
+            { t: 14.5, text: "Enam" },
+            { t: 15.5, text: "Isinya namamu" },
+            { t: 18.4, text: "NOVIA EXTA ARIANA ❤️" }
         ];
 
-        // Masukkan lirik
-        lyricsData.forEach((lyric, index) => {
-            let div = document.createElement("div");
-            div.className = "lyric-line";
-            div.id = "lyric-" + index;
-            div.innerText = lyric.text;
-            lyricsContent.appendChild(div);
+        // Init Photos
+        photos.forEach((src, i) => {
+            const img = document.createElement("img");
+            img.src = src;
+            if(i === 0) img.classList.add("active");
+            img.id = `vivi-img-${i}`;
+            photoContainer.appendChild(img);
         });
 
-        let activeLyricIndex = -1;
+        // Init Lyrics
+        lyricsData.forEach((item, i) => {
+            const el = document.createElement("div");
+            el.className = "lyric-item";
+            el.id = "line-" + i;
+            el.innerText = item.text;
+            viewport.appendChild(el);
+        });
 
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.classList.add("heart");
+            heart.innerHTML = "❤️";
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.fontSize = Math.random() * 20 + 20 + "px";
+            heart.style.animationDuration = Math.random() * 2 + 2 + "s";
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4000);
+        }
+
+        function initExperience() {
+            for(let i=0; i<25; i++) {
+                setTimeout(createHeart, i * 150);
+            }
+            document.getElementById("welcome-screen").style.opacity = "0";
+            setTimeout(() => {
+                document.getElementById("welcome-screen").style.display = "none";
+                document.getElementById("card").classList.add("show");
+                audio.play();
+            }, 800);
+        }
+
+        // Slideshow Logic
+        let photoIndex = 0;
+        setInterval(() => {
+            document.getElementById(`vivi-img-${photoIndex}`).classList.remove("active");
+            photoIndex = (photoIndex + 1) % photos.length;
+            document.getElementById(`vivi-img-${photoIndex}`).classList.add("active");
+        }, 5000);
+
+        // Lyrics Logic
+        let lastIndex = -1;
         audio.addEventListener("timeupdate", () => {
-            const currentTime = audio.currentTime;
-            let newActiveIndex = -1;
+            const time = audio.currentTime;
+            let activeIndex = -1;
 
             for (let i = 0; i < lyricsData.length; i++) {
-                if (currentTime >= lyricsData[i].time) newActiveIndex = i;
+                if (time >= lyricsData[i].t) activeIndex = i;
                 else break;
             }
 
-            if (newActiveIndex !== activeLyricIndex && newActiveIndex !== -1) {
-                // Matikan yang lama
-                if (activeLyricIndex !== -1) {
-                    document.getElementById("lyric-" + activeLyricIndex).classList.remove("active");
+            if (activeIndex !== lastIndex && activeIndex !== -1) {
+                if (lastIndex !== -1) {
+                    document.getElementById("line-" + lastIndex).classList.remove("active");
                 }
-
-                // Aktifkan yang baru
-                activeLyricIndex = newActiveIndex;
-                const activeElement = document.getElementById("lyric-" + activeLyricIndex);
-                activeElement.classList.add("active");
-
-                // --- PERBAIKAN UNTUK CHROME ---
-                // Hitung posisi: Geser kontainer lirik agar baris yang aktif selalu di posisi atas/tengah box
-                // Rumus: tinggi baris dikali urutan baris
-                const moveAmount = activeElement.offsetTop - 40; 
-                lyricsContent.style.top = `-${moveAmount}px`;
+                lastIndex = activeIndex;
+                document.getElementById("line-" + activeIndex).classList.add("active");
             }
         });
     </script>
