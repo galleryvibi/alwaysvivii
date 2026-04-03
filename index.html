@@ -323,6 +323,18 @@
                 document.getElementById("line-" + activeIndex).classList.add("active");
             }
         });
+        // --- FITUR PAUSE OTOMATIS SAAT PINDAH TAB/WEB LAIN ---
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                // Jika web ditutup/pindah tab, musik dijeda
+                audio.pause();
+            } else {
+                // Jika kembali ke web DAN tombol buka sudah pernah diklik, putar lagi
+                if (document.getElementById("card").classList.contains("show")) {
+                    audio.play();
+                }
+            }
+        });
     </script>
 </body>
 </html>
