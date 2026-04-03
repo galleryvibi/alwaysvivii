@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>untuk vivii </title>
+    <title>untuk vivii</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
     
@@ -93,8 +93,8 @@
         /* --- MAIN CARD --- */
         .spotify-card {
             width: 92%;
-            max-width: 750px; /* Ukuran maksimal diperkecil agar lebih compact */
-            height: 60vh;    /* Tinggi dikurangi agar tidak banyak ruang kosong */
+            max-width: 750px;
+            height: 60vh;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 35px;
@@ -111,6 +111,7 @@
             transform: translateY(0);
         }
 
+        /* --- FOTO AREA (ZOOM DIHAPUS) --- */
         .cover-art {
             width: 40%;
             height: 100%;
@@ -124,17 +125,14 @@
             object-fit: cover; 
             position: absolute;
             opacity: 0;
+            /* Efek transisi pudar tetap dipertahankan agar halus saat ganti foto */
             transition: opacity 1.5s ease-in-out;
+            /* Transform scale dihapus agar foto statis */
         }
 
         .cover-art img.active {
             opacity: 1;
-            animation: kenburns 10s infinite alternate;
-        }
-
-        @keyframes kenburns {
-            from { transform: scale(1.1); }
-            to { transform: scale(1.25) rotate(1deg); }
+            /* Animasi kenburns dihapus */
         }
 
         /* --- LYRICS SECTION --- */
@@ -148,7 +146,7 @@
         }
 
         .song-info {
-            margin-bottom: 20px; /* Jarak dikurangi */
+            margin-bottom: 20px;
             flex-shrink: 0;
             border-left: 3px solid var(--primary);
             padding-left: 15px;
@@ -181,7 +179,7 @@
 
         .lyric-item {
             position: absolute;
-            font-size: 1.6rem; /* Ukuran lirik diperbesar sedikit agar mengisi ruang */
+            font-size: 1.6rem;
             color: var(--primary);
             font-weight: 700;
             line-height: 1.3;
@@ -218,7 +216,7 @@
     <audio id="mainAudio" src="sukavivi.mp3" loop></audio>
 
     <div id="welcome-screen">
-        <h1>bima ada sesuatu <br> buat vivii... </h1>
+        <h1>bima ada sesuatu <br> buat vivii.../h1>
         <button class="open-btn" onclick="initExperience()">BUKA SEKARANG</button>
     </div>
 
@@ -240,6 +238,7 @@
         const viewport = document.getElementById("viewport");
         const photoContainer = document.getElementById("photo-container");
 
+        // Ganti dengan nama file foto kamu yang sebenarnya
         const photos = ["vivi1.jpg", "vivi6.jpg", "vivi3.jpg", "vivi4~2.jpg"];
         const lyricsData = [
             { t: 0, text: "Hal yang paling ku suka" },
@@ -297,13 +296,13 @@
             }, 800);
         }
 
-        // Slideshow Logic
+        // Slideshow Logic (Hanya ganti foto, tanpa zoom)
         let photoIndex = 0;
         setInterval(() => {
             document.getElementById(`vivi-img-${photoIndex}`).classList.remove("active");
             photoIndex = (photoIndex + 1) % photos.length;
             document.getElementById(`vivi-img-${photoIndex}`).classList.add("active");
-        }, 5000);
+        }, 5000); // Ganti foto setiap 5 detik
 
         // Lyrics Logic
         let lastIndex = -1;
